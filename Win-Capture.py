@@ -30,7 +30,7 @@ from windows_capture import WindowsCapture, Frame, InternalCaptureControl
 
 # Configure capture; choose exactly one of window_name or monitor_index for clarity.
 # - To capture a specific window, set window_name to that window's title and leave
-#   monitor_index as None.
+#   monitor_index as None. 
 # - To capture a monitor, set monitor_index (e.g., 0 for primary) and leave
 #   window_name as None.
 capture = WindowsCapture(
@@ -72,9 +72,12 @@ capture.start()
 try:
     _stopped.wait()
 except KeyboardInterrupt:
+    # Gracefully request stop and wait briefly for closure
     stop_fn = getattr(capture, "stop", None)
     if callable(stop_fn):
         try:
             stop_fn()
         except Exception:
             pass
+    # Wait a moment for on_closed to fire and set the event
+    _stopped.wait(timeout=3)
