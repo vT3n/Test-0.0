@@ -25,6 +25,7 @@ Capture lifecycle (high level)
 """
 
 from time import sleep
+from threading import Event
 from windows_capture import WindowsCapture, Frame, InternalCaptureControl
 
 # Configure capture; choose exactly one of window_name or monitor_index for clarity.
@@ -42,6 +43,8 @@ capture = WindowsCapture(
 )
 
 
+_stopped = Event()
+
 @capture.event
 def on_frame_arrived(frame: Frame, capture_control: InternalCaptureControl):
     """Called on each new frame from the capture thread.
@@ -58,19 +61,20 @@ def on_frame_arrived(frame: Frame, capture_control: InternalCaptureControl):
 def on_closed():
     """Called when the capture item/session closes."""
     print("Capture Session Closed")
+    _stopped.set()
 
 
 # Start the capture thread. After this, frames begin arriving and invoking
 # on_frame_arrived automatically.
 capture.start()
 
-# Keep the main thread alive so the background capture can run.
+# Wait until the capture session signals it has closed (no sleep loop).
 try:
-    join_fn = getattr(capture, "join", None)
-    if callable(join_fn):
-        join_fn()  # If the library exposes join(), use it.
-    else:
-        while True:
-            sleep(0)
-except Exception:
-    pass
+    _stopped.wait()
+except KeyboardInterrupt:
+    stop_fn = getattr(capture, "stop", None)
+    if callable(stop_fn):
+        try:
+            stop_fn()
+        except Exception:
+            pass
