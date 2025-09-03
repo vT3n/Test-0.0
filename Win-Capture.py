@@ -34,7 +34,9 @@ from windows_capture import WindowsCapture, Frame, InternalCaptureControl
 #   window_name as None.
 capture = WindowsCapture(
     cursor_capture=False,   # Exclude cursor for slightly higher FPS
-    draw_border=False,      # Disable debug border drawing
+    # On some Windows versions, toggling the border is unsupported by the
+    # Graphics Capture API. Use None to keep the OS default and avoid toggling.
+    draw_border=None,
     monitor_index=None,     # e.g., 0 for primary monitor. Keep None if targeting a window
     window_name=None,       # e.g., "Untitled - Notepad". Keep None if targeting a monitor
 )
@@ -77,15 +79,17 @@ capture.start()
 
 # Keep the main thread alive so the background capture can run.
 try:
-    if hasattr(capture, "join"):
-        capture.join()  # If the library exposes join(), use it.
+    join_fn = getattr(capture, "join", None)
+    if callable(join_fn):
+        join_fn()  # If the library exposes join(), use it.
     else:
         while True:
             sleep(1)
 except KeyboardInterrupt:
     # Graceful stop on Ctrl+C (if exposed by the library)
-    try:
-        if hasattr(capture, "stop"):
-            capture.stop()
-    except Exception:
-        pass
+    stop_fn = getattr(capture, "stop", None)
+    if callable(stop_fn):
+        try:
+            stop_fn()
+        except Exception:
+            pass
