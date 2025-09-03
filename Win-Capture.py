@@ -24,7 +24,7 @@ Capture lifecycle (high level)
    which triggers on_closed.
 """
 
-from time import perf_counter, sleep
+from time import sleep
 from windows_capture import WindowsCapture, Frame, InternalCaptureControl
 
 # Configure capture; choose exactly one of window_name or monitor_index for clarity.
@@ -42,11 +42,6 @@ capture = WindowsCapture(
 )
 
 
-# Simple FPS counter (prints once per second to avoid slowing the callback)
-_frame_count = 0
-_t_start = perf_counter()
-
-
 @capture.event
 def on_frame_arrived(frame: Frame, capture_control: InternalCaptureControl):
     """Called on each new frame from the capture thread.
@@ -54,17 +49,9 @@ def on_frame_arrived(frame: Frame, capture_control: InternalCaptureControl):
     Keep this handler minimal to maximize FPS. Heavy work (like PNG encoding
     or CPU/GPU processing) should be moved to a separate worker thread/queue.
     """
-    global _frame_count, _t_start
-
-    _frame_count += 1
-    now = perf_counter()
-
-    # Print FPS once per second
-    if now - _t_start >= 1.0:
-        fps = _frame_count / (now - _t_start)
-        print(f"FPS: {fps:.1f}")
-        _frame_count = 0
-        _t_start = now
+    # No FPS counting or prints here to avoid overhead.
+    # Do the lightest possible per-frame work, or queue frames elsewhere.
+    pass
 
 
 @capture.event
@@ -84,12 +71,6 @@ try:
         join_fn()  # If the library exposes join(), use it.
     else:
         while True:
-            sleep(1)
-except KeyboardInterrupt:
-    # Graceful stop on Ctrl+C (if exposed by the library)
-    stop_fn = getattr(capture, "stop", None)
-    if callable(stop_fn):
-        try:
-            stop_fn()
-        except Exception:
-            pass
+            sleep(0)
+except Exception:
+    pass
