@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
+    <GameAssembliesDir Condition=" '$(GameAssembliesDir)' == '' ">C:\\Program Files (x86)\\Steam\\steamapps\\common\\Enter the Gungeon\\EnterTheGungeon_Data\\Managed</GameAssembliesDir>
+    <BepInExDir Condition=" '$(BepInExDir)' == '' ">$(MSBuildProjectDirectory)\..\..\BepInEx</BepInExDir>
+    <AssemblyName>GungeonRLTracker</AssemblyName>
+    <RootNamespace>GungeonRLTracker</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>$(BepInExDir)\core\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(GameAssembliesDir)\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule" Condition="Exists('$(GameAssembliesDir)\\UnityEngine.CoreModule.dll')">
+      <HintPath>$(GameAssembliesDir)\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameAssembliesDir)\Assembly-CSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="$(BepInExDir)\plugins\GungeonRLTracker\GungeonRLTracker.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Message Text="Copying built plugin into BepInEx/plugins" Importance="high" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExDir)\plugins\GungeonRLTracker" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
