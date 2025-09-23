@@ -1,8 +1,8 @@
-# Enter the Gungeon ML Tracker (Personal Project Plan)
+# Enter the Gungeon ML Tracker (Project Plan)
 
 ## Summary
 
-This personal project explores capturing **Enter the Gungeon** game state through **BepInEx** plugins and turning those observations into datasets for training **PyTorch** agents. The long-term dream is to let a learned model reason about the game and eventually pilot a character through runs without human input.
+This project is me trying to capture **Enter the Gungeon** game state through **BepInEx** and turning those "observations" into data for training a **PyTorch** model. The long-term goal is to train "player" a model to reason about the game and eventually pilot a character through runs without input.
 
 ---
 
@@ -14,11 +14,11 @@ This personal project explores capturing **Enter the Gungeon** game state throug
 4. **Model Training:** Prototype training pipelines in PyTorch that learn from the captured data (predict next actions, evaluate reward functions, etc.).
 5. **Closed-Loop Control (Future):** Investigate how to drive in-game inputs with a trained model, creating a full “model plays the game” loop.
 
-The goal is to push field and description into a local host to be able to used for training data 
-for a pytorch model that will learn the game and play
+The goal is to push data with descriptions into a localhost to be able to read for training data 
+for a pytorch model
 ---
 
-## Architecture Sketch
+## Architecture Sketch (Draft)
 
 ```
 Enter the Gungeon (Unity)
@@ -50,11 +50,11 @@ Experimental Agents / Evaluation Harness
 |----------------------------|-------------------------------------------------------------------------|
 | `GungeonRLTracker/`        | Unity/BepInEx plugin source (C# / .NET 9.0).                            |
 | `scripts/`                 | Tooling for log parsing, dataset assembly, schema validation.           |
-| `notebooks/`               | Exploratory analysis, prototyping reward functions, sanity checks.     |
-| `training/`                | PyTorch training loops, models, evaluation utilities.                  |
-| `docs/`                    | Additional design notes, schema definitions, personal experiment logs. |
+| `notebooks/`               | Exploratory, prototyping reward functions, sanity checks.               |
+| `training/`                | PyTorch training, models, utilities.                                    |
+| `docs/`                    | Additional notes.                                                       |
 
-*(Most directories are aspirational; create them as milestones are hit.)*
+*(note for later)*
 
 ---
 
@@ -84,7 +84,7 @@ Experimental Agents / Evaluation Harness
 
 ### Phase 1 – BepInEx Setup
 - [x] Install BepInEx 5.4.x into Enter the Gungeon directory.
-- [ ] Scaffold a .NET 9.0 class library project targeting BepInEx plugin conventions.
+- [x] Scaffold a .NET 9.0 class library project targeting BepInEx plugin conventions.
 - [ ] Verify plugin loads (simple console/log output).
 
 ### Phase 2 – State Extraction
@@ -129,24 +129,7 @@ Experimental Agents / Evaluation Harness
 
 ## Open Questions & Future Ideas
 
-- Should observations be frame-synced or event-driven? Measure performance impact.
-- Evaluate compression (protobuf/msgpack) vs. raw JSON once data volume is known.
-- Track cooperative mode? Multi-agent handling will complicate schema and reward functions.
-- Curriculum strategy: train on early floors first, progressively unlock later floors.
-- Visualization dashboard for inspecting logged runs (e.g., simple web UI).
-
+- ''
+- ''
+  
 ---
-
-## Getting Started (Personal Checklist)
-
-1. Back up the original Enter the Gungeon install before modding.
-2. Drop BepInEx files and confirm the launcher runs without crashing. (We are here, with working console from BepInEx)
-3. Build the plugin project and copy the DLL into `BepInEx/plugins`. (Working on the .cs for plugin rn <--)
-4. Start the localhost service (`uvicorn main:app --reload --port 8000`) and tail logs.
-5. Launch the game, play a short run, and ensure JSON snapshots arrive and are stored.
-6. Review logs for missing fields or malformed entries; iterate on plugin serialization.
-7. Begin writing analysis notebooks to inspect the collected data.
-
----
-
-*This README documents a personal experimentation roadmap—timelines are flexible, scope may evolve, and all tasks are for personal learning and curiosity.*
