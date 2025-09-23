@@ -13,10 +13,12 @@
         "packagesPath": "C:\\Users\\thete\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\thete\\Documents\\Github\\Test-0.0\\EtG.Plugin\\obj\\",
         "projectStyle": "PackageReference",
+        "crossTargeting": true,
         "configFilePaths": [
           "C:\\Users\\thete\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
+          "net35",
           "net9.0"
         ],
         "sources": {
@@ -25,6 +27,10 @@
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
+            "projectReferences": {}
+          },
+          "net35": {
+            "targetAlias": "net35",
             "projectReferences": {}
           }
         },
@@ -60,6 +66,18 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        },
+        "net35": {
+          "targetAlias": "net35",
+          "dependencies": {
+            "Microsoft.NETFramework.ReferenceAssemblies": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305\\RuntimeIdentifierGraph.json"
         }
       }
     }
