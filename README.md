@@ -84,7 +84,7 @@ Experimental Agents / Evaluation Harness
 
 ### Phase 1 – BepInEx Setup
 - [x] Install BepInEx 5.4.x into Enter the Gungeon directory.
-- [~] Scaffold a .NET 9.0 class library project targeting BepInEx plugin conventions.
+- [ ] Scaffold a .NET 9.0 class library project targeting BepInEx plugin conventions.
 - [ ] Verify plugin loads (simple console/log output).
 
 ### Phase 2 – State Extraction
