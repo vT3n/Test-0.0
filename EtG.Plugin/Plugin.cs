@@ -171,7 +171,67 @@ namespace EtG.Plugin
             return null;
         }
 
-        
+        private static string MapDungeonIdToFriendly(string raw)
+        {
+            if (string.IsNullOrEmpty(raw)) return "Unknown";
+
+            // If it's already a nice human name, just return it.
+            // (Keep it very light—only reject clearly "base-like" tokens.)
+            string trimmed = raw.Trim();
+            if (!trimmed.StartsWith("Base_", StringComparison.OrdinalIgnoreCase) &&
+                !trimmed.StartsWith("FinalScenario_", StringComparison.OrdinalIgnoreCase) &&
+                !trimmed.StartsWith("tt_", StringComparison.OrdinalIgnoreCase) &&
+                !trimmed.StartsWith("fs_", StringComparison.OrdinalIgnoreCase) &&
+                !trimmed.StartsWith("ss_", StringComparison.OrdinalIgnoreCase))
+            {
+                return trimmed;
+            }
+
+            string s = trimmed.ToLowerInvariant();
+
+            // --- Hub / tutorial ---
+            if (s.Contains("tt_foyer") || s.Contains("base_foyer"))         return "Breach";
+            if (s.Contains("tt_tutorial") || s.Contains("base_tutorial"))   return "Tutorial";
+
+            // --- Main floors ---
+            if (s.Contains("tt_castle") || s.Contains("base_castle"))       return "Keep of the Lead Lord";  // Floor 1
+            // Some builds use "tt5" for floor 2 (!); prefab "Base_Gungeon" is the giveaway.
+            if (s.Contains("tt5") || s.Contains("base_gungeon"))            return "Gungeon Proper";         // Floor 2
+            if (s.Contains("tt_mines") || s.Contains("base_mines"))         return "Black Powder Mine";      // Floor 3
+            if (s.Contains("tt_catacombs") || s.Contains("base_catacombs")) return "Hollow";                 // Floor 4
+            if (s.Contains("tt_forge") || s.Contains("base_forge"))         return "Forge";                  // Floor 5
+            if (s.Contains("tt_bullethell") || s.Contains("base_bullethell")) return "Bullet Hell";
+
+            // --- Secret / special floors in your list ---
+            if (s.Contains("tt_sewer") || s.Contains("base_sewer"))         return "Oubliette";
+            if (s.Contains("tt_cathedral") || s.Contains("base_cathedral")) return "Abbey of the True Gun";
+            if (s.Contains("tt_nakatomi") || s.Contains("base_nakatomi"))   return "R&G Dept.";
+            if (s.Contains("ss_resourcefulrat") || s.Contains("base_resourcefulrat")) return "Resourceful Rat Lair";
+            if (s.Contains("tt_belly") || s.Contains("base_belly"))         return "Belly of the Beast";
+            if (s.Contains("tt_jungle") || s.Contains("base_jungle"))       return "Jungle";
+            if (s.Contains("tt_future") || s.Contains("base_future"))       return "The Future";
+            if (s.Contains("tt_phobos") || s.Contains("base_phobos"))       return "Phobos";
+            if (s.Contains("tt_west")   || s.Contains("base_west"))         return "The West";
+
+            // --- The Past (character finales) ---
+            if (s.Contains("fs_pilot")   || s.Contains("finalscenario_pilot"))   return "The Past - The Pilot";
+            if (s.Contains("fs_convict") || s.Contains("finalscenario_convict")) return "The Past - The Convict";
+            if (s.Contains("fs_soldier") || s.Contains("finalscenario_soldier")) return "The Past - The Marine";
+            if (s.Contains("fs_guide")   || s.Contains("finalscenario_guide"))   return "The Past - The Hunter";
+            if (s.Contains("fs_coop")    || s.Contains("finalscenario_coop"))    return "The Past - Co-op";
+            if (s.Contains("fs_robot")   || s.Contains("finalscenario_robot"))   return "The Past - The Robot";
+            if (s.Contains("fs_bullet")  || s.Contains("finalscenario_bullet"))  return "The Past - The Bullet";
+
+            // Fallback: strip common prefixes like "Base_" and return a cleaned token
+            if (trimmed.StartsWith("Base_", StringComparison.OrdinalIgnoreCase))
+                return trimmed.Substring(5).Replace('_', ' ');
+            if (trimmed.StartsWith("FinalScenario_", StringComparison.OrdinalIgnoreCase))
+                return "The Past - " + trimmed.Substring(14).Replace('_', ' ');
+
+            // Last resort: return raw
+            return raw;
+        }
+
 
 
         private string TryGetLevelName()
