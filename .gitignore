@@ -12,3 +12,8 @@ obj/
 # OS
 .DS_Store
 Thumbs.db
+
+
+# Local Windows shortcuts
+*.url
+*.lnk
