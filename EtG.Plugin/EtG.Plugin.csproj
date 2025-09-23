@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>net9.0;net35</TargetFrameworks>
 
-    <!-- default OFF so net35 doesn't get GlobalUsings.g.cs -->
+    <!-- default OFF so net35 doesn't generate GlobalUsings.g.cs -->
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
 
@@ -11,7 +11,7 @@
     <RootNamespace>EtG.Plugin</RootNamespace>
   </PropertyGroup>
 
-  <!-- Enable modern conveniences only for net9.0 -->
+  <!-- Modern niceties only for net9.0 -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -21,8 +21,8 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'net35'">
     <DefineConstants>$(DefineConstants);BEPINEX</DefineConstants>
     <LangVersion>7.3</LangVersion>
-    <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <!-- References for net35 -->
@@ -45,7 +45,7 @@
     </Reference>
   </ItemGroup>
 
-  <!-- Optional: auto-copy plugin after net35 build -->
+  <!-- Auto-copy plugin after net35 build -->
   <Target Name="CopyToBepInExPlugins" AfterTargets="Build"
           Condition="'$(TargetFramework)' == 'net35' And '$(BEPINEX_DIR)' != ''">
     <PropertyGroup>

@@ -37,7 +37,7 @@ namespace EtG.Plugin
         private void OnDestroy()
         {
             if (_harmony != null)
-                _harmony.UnpatchSelf(); // instead of UnpatchAll(PluginGuid)
+                _harmony.UnpatchSelf(); // correct replacement for UnpatchAll(PluginGuid)
 
             if (LogSrc != null)
                 LogSrc.LogInfo(PluginName + " shutdown.");
