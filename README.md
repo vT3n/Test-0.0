@@ -62,21 +62,21 @@ Experimental Agents / Evaluation Harness
 
 | Field                                                | Description                                                                                   |
 |------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `sequence`                                           | Incrementing identifier per snapshot.                                                         |
-| `realtime`                                           | Seconds since level load (`Time.realtimeSinceStartup`).                                        |
-| `level_name`                                         | Current floor name (e.g., “Base Camp”).                                                       |
-| `player.position`                                    | `[x, y]` world coordinates (center).                                                          |
-| `player.velocity`                                    | `[x, y]` velocity vector.                                                                     |
-| `player.health`, `player.max_health`, `player.armor` | Vital stats from `HealthHaver`.                                                               |
-| `player.blanks`, `player.money`, `player.keys`       | Consumables inventory.                                                                        |
-| `player.current_gun_id`, `player.current_gun_ammo`   | Active weapon identifier and ammo count.                                                      |
-| `player.passive_item_ids`                            | List of passive item pickup IDs.                                                              |
-| `enemies[]`                                          | Per enemy: position, health, boss flag, distance to player.                                   |
-| `projectiles[]`                                      | Per projectile: position, direction, speed, `is_enemy` flag.                                  |
-| `room.*`                                             | Current room metadata: grid coords, dimensions, remaining enemies, boss flag.                 |
-| `reward`                                             | Scalar reward (damage dealt, damage taken, room cleared, etc.).                               |
-| `meta.run_id`                                        | Unique identifier per run/session (helps join multi-file logs).                               |
-| `meta.version`                                       | Schema version for backward compatibility.                                                    |
+| - [x] `sequence`                                           | Incrementing identifier per snapshot.                                                      |
+| - [x] `realtime`                                           | Seconds since level load (`Time.realtimeSinceStartup`).                                    |
+| - [x] `level_name`                                         | Current floor name (e.g., “Base Camp”).                                                    |
+| - [x] `player.position`                                    | `[x, y]` world coordinates (center).                                                       |
+| - [x] `player.velocity`                                    | `[x, y]` velocity vector.                                                                  |
+| - [x] `player.health`, `player.max_health`, `player.armor` | Vital stats from `HealthHaver`.                                                            |
+| - [] `player.blanks`, `player.money`, `player.keys`       | Consumables inventory.                                                                     |
+| - [] `player.current_gun_id`, `player.current_gun_ammo`   | Active weapon identifier and ammo count.                                                   |
+| - [] `player.passive_item_ids`                            | List of passive item pickup IDs.                                                           |
+| - [] `enemies[]`                                          | Per enemy: position, health, boss flag, distance to player.                                |
+| - [] `projectiles[]`                                      | Per projectile: position, direction, speed, `is_enemy` flag.                               |
+| - [] `room.*`                                             | Current room metadata: grid coords, dimensions, remaining enemies, boss flag.              |
+| - [] `reward`                                             | Scalar reward (damage dealt, damage taken, room cleared, etc.).                            |
+| - [] `meta.run_id`                                        | Unique identifier per run/session (helps join multi-file logs).                            |
+| - [] `meta.version`                                       | Schema version for backward compatibility.                                                 |
 
 ---
 
@@ -85,10 +85,10 @@ Experimental Agents / Evaluation Harness
 ### Phase 1 – BepInEx Setup
 - [x] Install BepInEx 5.4.x into Enter the Gungeon directory.
 - [x] Scaffold a .NET 9.0 class library project targeting BepInEx plugin conventions.
-- [ ] Verify plugin loads (simple console/log output).
+- [x] Verify plugin loads (simple console/log output).
 
 ### Phase 2 – State Extraction
-- [ ] Locate Unity components for player stats, enemies, projectiles, and rooms.
+- [x] Locate Unity components for player stats, enemies, projectiles, and rooms.
 - [ ] Implement safe null-checks and error handling for runtime state access.
 - [ ] Serialize a minimal JSON payload every frame (or on fixed timestep).
 - [ ] Add configuration toggles (e.g., sampling rate, log level).
