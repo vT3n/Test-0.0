@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EtG.Plugin")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+28b1e4f30a71e10a4168a6fd2aff2f668295d745")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6b9029eafbf539177aff12c1bd1189003bb6af31")]
 [assembly: System.Reflection.AssemblyProductAttribute("EtG.Plugin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EtG.Plugin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

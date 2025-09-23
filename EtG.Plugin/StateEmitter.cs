@@ -195,13 +195,13 @@ namespace EtG.Plugin
         public float health = -1f;
         public float max_health = -1f;
     }
-
-    internal sealed class Marker
+        internal sealed class Marker
     {
-        public int sequence;
-        public float realtime;
-        public string label;
+        public int sequence = -1;
+        public float realtime = 0f;
+        public string label = "";
     }
+
 
 }
 #endif
