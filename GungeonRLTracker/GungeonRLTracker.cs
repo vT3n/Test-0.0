@@ -8,8 +8,8 @@ using System.Text;
 using System.Threading;
 using BepInEx;
 using Dungeonator;
-using Gungeon;
 using UnityEngine;
+using Newtonsoft.Json; // NEW
 
 namespace GungeonRLTracker
 {
@@ -38,14 +38,10 @@ namespace GungeonRLTracker
         private void Update()
         {
             if (!GameManager.HasInstance || GameManager.Instance.PrimaryPlayer == null)
-            {
                 return;
-            }
 
             if (Time.realtimeSinceStartup - _lastSnapshotTime < SnapshotIntervalSeconds)
-            {
                 return;
-            }
 
             _lastSnapshotTime = Time.realtimeSinceStartup;
             TrySendSnapshot();
@@ -58,20 +54,12 @@ namespace GungeonRLTracker
 
             if (_listener != null)
             {
-                try
-                {
-                    _listener.Stop();
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError($"Failed to stop listener: {ex}");
-                }
+                try { _listener.Stop(); }
+                catch (Exception ex) { Logger.LogError($"Failed to stop listener: {ex}"); }
             }
 
             if (_listenerThread != null && _listenerThread.IsAlive)
-            {
                 _listenerThread.Join(TimeSpan.FromSeconds(1));
-            }
 
             lock (_clientLock)
             {
@@ -81,10 +69,7 @@ namespace GungeonRLTracker
 
         private void TryStartListener(int port)
         {
-            if (_listener != null)
-            {
-                return;
-            }
+            if (_listener != null) return;
 
             try
             {
@@ -130,16 +115,12 @@ namespace GungeonRLTracker
                 catch (SocketException)
                 {
                     if (!_shutdown)
-                    {
                         Logger.LogWarning("Socket exception while waiting for client; continuing");
-                    }
                 }
                 catch (Exception ex)
                 {
                     if (!_shutdown)
-                    {
                         Logger.LogError($"Unexpected error while waiting for client: {ex}");
-                    }
                 }
             }
         }
@@ -160,19 +141,14 @@ namespace GungeonRLTracker
         {
             lock (_clientLock)
             {
-                if (_writer == null)
-                {
-                    return;
-                }
+                if (_writer == null) return;
             }
 
             try
             {
                 var snapshot = BuildSnapshot();
                 if (snapshot != null)
-                {
                     SendMessage(snapshot);
-                }
             }
             catch (Exception ex)
             {
@@ -189,7 +165,10 @@ namespace GungeonRLTracker
             string json;
             try
             {
-                json = JsonUtility.ToJson(payload);
+                json = JsonConvert.SerializeObject(
+                    payload,
+                    new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include }
+                );
             }
             catch (Exception ex)
             {
@@ -199,10 +178,7 @@ namespace GungeonRLTracker
 
             lock (_clientLock)
             {
-                if (_writer == null)
-                {
-                    return;
-                }
+                if (_writer == null) return;
 
                 try
                 {
@@ -220,16 +196,14 @@ namespace GungeonRLTracker
         {
             var gameManager = GameManager.Instance;
             var player = gameManager.PrimaryPlayer;
-            if (player == null)
-            {
-                return null;
-            }
+            if (player == null) return null;
 
             var snapshot = new Snapshot
             {
                 sequence = ++_sequenceId,
                 realtime = Time.realtimeSinceStartup,
-                level_name = gameManager.Dungeon?.LevelName,
+                // Some ETG builds don't expose a friendly floor name on Dungeon; fall back to GameObject name
+                level_name = gameManager.Dungeon != null ? gameManager.Dungeon.gameObject?.name : null,
                 player = BuildPlayerState(player)
             };
 
@@ -258,7 +232,7 @@ namespace GungeonRLTracker
                 velocity = ToVector(player.Velocity),
                 health = player.healthHaver?.GetCurrentHealth() ?? 0f,
                 max_health = player.healthHaver?.GetMaxHealth() ?? 0f,
-                armor = player.healthHaver?.Armor ?? 0,
+                armor = player.healthHaver?.Armor ?? 0f,
                 blanks = player.Blanks,
                 money = player.carriedConsumables.Currency,
                 keys = player.carriedConsumables.KeyBullets,
@@ -275,18 +249,13 @@ namespace GungeonRLTracker
             var center = player.specRigidbody != null ? player.specRigidbody.UnitCenter : Vector2.zero;
             var enemies = StaticReferenceManager.AllEnemies;
 
-            if (enemies == null)
-            {
-                return Array.Empty<EnemyState>();
-            }
+            if (enemies == null) return Array.Empty<EnemyState>();
 
             var result = new List<EnemyState>(enemies.Count);
             foreach (var enemy in enemies)
             {
                 if (enemy == null || enemy.healthHaver == null || enemy.healthHaver.IsDead)
-                {
                     continue;
-                }
 
                 var enemyCenter = enemy.specRigidbody != null ? enemy.specRigidbody.UnitCenter : enemy.CenterPosition;
                 result.Add(new EnemyState
@@ -295,7 +264,7 @@ namespace GungeonRLTracker
                     position = ToVector(enemyCenter),
                     health = enemy.healthHaver.GetCurrentHealth(),
                     max_health = enemy.healthHaver.GetMaxHealth(),
-                    is_boss = enemy.IsBoss,
+                    is_boss = enemy.healthHaver != null && enemy.healthHaver.IsBoss,
                     distance_to_player = Vector2.Distance(center, enemyCenter)
                 });
             }
@@ -306,18 +275,13 @@ namespace GungeonRLTracker
         private ProjectileState[] BuildProjectileStates()
         {
             var projectiles = StaticReferenceManager.AllProjectiles;
-            if (projectiles == null)
-            {
-                return Array.Empty<ProjectileState>();
-            }
+            if (projectiles == null) return Array.Empty<ProjectileState>();
 
             var result = new List<ProjectileState>(projectiles.Count);
             foreach (var projectile in projectiles)
             {
                 if (projectile == null || projectile.specRigidbody == null)
-                {
                     continue;
-                }
 
                 var owner = projectile.Owner;
                 var ownerAi = owner != null ? owner.aiActor : null;
@@ -337,10 +301,7 @@ namespace GungeonRLTracker
 
         private RoomState BuildRoomState(RoomHandler room, Vector2 playerCenter)
         {
-            if (room == null || room.area == null)
-            {
-                return null;
-            }
+            if (room == null || room.area == null) return null;
 
             var area = room.area;
             var basePosition = new[] { area.basePosition.x, area.basePosition.y };
@@ -348,12 +309,14 @@ namespace GungeonRLTracker
 
             var activeEnemyCount = room.GetActiveEnemies(RoomHandler.ActiveEnemyType.RoomClear)?.Count ?? 0;
 
+            bool isBossRoom = area.PrototypeRoomCategory == PrototypeDungeonRoom.RoomCategory.BOSS;
+
             return new RoomState
             {
                 room_name = room.GetRoomName(),
                 base_position = basePosition,
                 dimensions = dimensions,
-                is_boss_room = room.IsBossRoom,
+                is_boss_room = isBossRoom,
                 enemies_remaining = activeEnemyCount,
                 player_relative_position = new[]
                 {
@@ -367,35 +330,18 @@ namespace GungeonRLTracker
         {
             if (_writer != null)
             {
-                try
-                {
-                    _writer.Dispose();
-                }
-                catch
-                {
-                    // ignored
-                }
+                try { _writer.Dispose(); } catch { }
                 _writer = null;
             }
 
             if (_client != null)
             {
-                try
-                {
-                    _client.Close();
-                }
-                catch
-                {
-                    // ignored
-                }
+                try { _client.Close(); } catch { }
                 _client = null;
             }
         }
 
-        private static float[] ToVector(Vector2 vector)
-        {
-            return new[] { vector.x, vector.y };
-        }
+        private static float[] ToVector(Vector2 vector) => new[] { vector.x, vector.y };
 
         [Serializable]
         private class Handshake

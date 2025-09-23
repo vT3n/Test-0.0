@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Target ETG/BepInEx runtime -->
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <AssemblyName>GungeonRLTracker</AssemblyName>
+    <RootNamespace>GungeonRLTracker</RootNamespace>
+
+    <!-- Defaults (override via -p:GameAssembliesDir=... -p:BepInExDir=...) -->
+    <GameAssembliesDir Condition="'$(GameAssembliesDir)'==''">
+      C:\Program Files (x86)\Steam\steamapps\common\Enter the Gungeon\EtG_Data\Managed
+    </GameAssembliesDir>
+    <BepInExDir Condition="'$(BepInExDir)'==''">
+      C:\Program Files (x86)\Steam\steamapps\common\Enter the Gungeon\BepInEx
+    </BepInExDir>
+  </PropertyGroup>
+
+  <!-- Let modern SDKs compile net472 without installing Dev Packs -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+
+  <!-- References to BepInEx + game assemblies (no copy-local) -->
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>$(BepInExDir)\core\BepInEx.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <!-- Unity: prefer CoreModule if present; fallback to legacy UnityEngine.dll -->
+    <Reference Include="UnityEngine.CoreModule" Condition="Exists('$(GameAssembliesDir)\UnityEngine.CoreModule.dll')">
+      <HintPath>$(GameAssembliesDir)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine" Condition="Exists('$(GameAssembliesDir)\UnityEngine.dll')">
+      <HintPath>$(GameAssembliesDir)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI" Condition="Exists('$(GameAssembliesDir)\UnityEngine.UI.dll')">
+      <HintPath>$(GameAssembliesDir)\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule" Condition="Exists('$(GameAssembliesDir)\UnityEngine.InputLegacyModule.dll')">
+      <HintPath>$(GameAssembliesDir)\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <!-- Game assemblies -->
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameAssembliesDir)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- Optional: present in some installs as separate DLLs -->
+    <Reference Include="Dungeonator" Condition="Exists('$(GameAssembliesDir)\Dungeonator.dll')">
+      <HintPath>$(GameAssembliesDir)\Dungeonator.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Gungeon" Condition="Exists('$(GameAssembliesDir)\Gungeon.dll')">
+      <HintPath>$(GameAssembliesDir)\Gungeon.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Post-build: copy to BepInEx/plugins/GungeonRLTracker -->
+  <Target Name="PostBuildCopy" AfterTargets="Build">
+    <PropertyGroup>
+      <PluginDir>$(BepInExDir)\plugins\GungeonRLTracker</PluginDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(PluginDir)" />
+    <Copy SourceFiles="$(TargetDir)GungeonRLTracker.dll"
+          DestinationFiles="$(PluginDir)\GungeonRLTracker.dll"
+          SkipUnchangedFiles="true" />
+  </Target>
+</Project>
