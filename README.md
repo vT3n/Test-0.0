@@ -14,6 +14,8 @@ This personal project explores capturing **Enter the Gungeon** game state throug
 4. **Model Training:** Prototype training pipelines in PyTorch that learn from the captured data (predict next actions, evaluate reward functions, etc.).
 5. **Closed-Loop Control (Future):** Investigate how to drive in-game inputs with a trained model, creating a full “model plays the game” loop.
 
+The goal is to push field and description into a local host to be able to used for training data 
+for a pytorch model that will learn the game and play
 ---
 
 ## Architecture Sketch
@@ -41,8 +43,6 @@ PyTorch Training Pipelines
         ▼
 Experimental Agents / Evaluation Harness
 ```
-
----
 
 ## Repository Layout (Planned)
 
@@ -140,8 +140,8 @@ Experimental Agents / Evaluation Harness
 ## Getting Started (Personal Checklist)
 
 1. Back up the original Enter the Gungeon install before modding.
-2. Drop BepInEx files and confirm the launcher runs without crashing.
-3. Build the plugin project and copy the DLL into `BepInEx/plugins`.
+2. Drop BepInEx files and confirm the launcher runs without crashing. (We are here, with working console from BepInEx)
+3. Build the plugin project and copy the DLL into `BepInEx/plugins`. (Working on the .cs for plugin rn <--)
 4. Start the localhost service (`uvicorn main:app --reload --port 8000`) and tail logs.
 5. Launch the game, play a short run, and ensure JSON snapshots arrive and are stored.
 6. Review logs for missing fields or malformed entries; iterate on plugin serialization.
