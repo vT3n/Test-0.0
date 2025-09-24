@@ -60,23 +60,24 @@ Experimental Agents / Evaluation Harness
 
 ## Data Schema (First Draft)
 
-| Field                                                | Description                                                                                   |
-|------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| - [x] `sequence`                                           | Incrementing identifier per snapshot.                                                      |
-| - [x] `realtime`                                           | Seconds since level load (`Time.realtimeSinceStartup`).                                    |
-| - [x] `level_name`                                         | Current floor name (e.g., “Base Camp”).                                                    |
-| - [x] `player.position`                                    | `[x, y]` world coordinates (center).                                                       |
-| - [x] `player.velocity`                                    | `[x, y]` velocity vector.                                                                  |
-| - [x] `player.health`, `player.max_health`, `player.armor` | Vital stats from `HealthHaver`.                                                            |
-| - [] `player.blanks`, `player.money`, `player.keys`       | Consumables inventory.                                                                     |
-| - [] `player.current_gun_id`, `player.current_gun_ammo`   | Active weapon identifier and ammo count.                                                   |
-| - [] `player.passive_item_ids`                            | List of passive item pickup IDs.                                                           |
-| - [] `enemies[]`                                          | Per enemy: position, health, boss flag, distance to player.                                |
-| - [] `projectiles[]`                                      | Per projectile: position, direction, speed, `is_enemy` flag.                               |
-| - [] `room.*`                                             | Current room metadata: grid coords, dimensions, remaining enemies, boss flag.              |
-| - [] `reward`                                             | Scalar reward (damage dealt, damage taken, room cleared, etc.).                            |
-| - [] `meta.run_id`                                        | Unique identifier per run/session (helps join multi-file logs).                            |
-| - [] `meta.version`                                       | Schema version for backward compatibility.                                                 |
+| Field                                                      | Description                                                                              |
+|------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| - [x] `sequence`                                           | Incrementing identifier per snapshot.                                                    |
+| - [x] `realtime`                                           | Seconds since level load (`Time.realtimeSinceStartup`).                                  |
+| - [x] `level_name`                                         | Current floor name (e.g., “Base Camp”).                                                  |
+| - [x] `player.position`                                    | `[x, y]` world coordinates (center).                                                     |
+| - [x] `player.velocity`                                    | `[x, y]` velocity vector.                                                                |
+| - []  `player.looking_angle`                               | `[x, y]` play direction vector in degrees (0–360, around player)                         |
+| - [x] `player.health`, `player.max_health`, `player.armor` | Vital stats from `HealthHaver`.                                                          |
+| - [] `player.blanks`, `player.money`, `player.keys`        | Consumables inventory.                                                                   |
+| - [] `player.current_gun_id`, `player.current_gun_ammo`    | Active weapon identifier and ammo count.                                                 |
+| - [] `player.passive_item_ids`                             | List of passive item pickup IDs.                                                         |
+| - [] `enemies[]`                                           | Per enemy: position, health, boss flag, distance to player.                              |
+| - [] `projectiles[]`                                       | Per projectile: position, direction, speed, `is_enemy` flag.                             |
+| - [] `room.*`                                              | Current room metadata: grid coords, dimensions, remaining enemies, boss flag.            |
+| - [] `reward`                                              | Scalar reward (damage dealt, damage taken, room cleared, etc.).                          |
+| - [] `meta.run_id`                                         | Unique identifier per run/session (helps join multi-file logs).                          |
+| - [] `meta.version`                                        | Schema version for backward compatibility.                                               |
 
 ![plot](./outlisten.png)
 ---
