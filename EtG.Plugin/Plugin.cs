@@ -145,6 +145,50 @@ namespace EtG.Plugin
                 catch { }
             }
 
+            // --- Consumables ---
+            int blanks = -1, money = -1, keys = -1;
+
+            if (_player != null)
+            {
+                try
+                {
+                    // 1) Blanks directly on PlayerController
+                    if (TryIntFromMembers(_player, out var b, "Blanks", "blanks", "m_currentBlanks"))
+                        blanks = b;
+
+                    // 2) Money / Keys – try direct first
+                    bool moneyDone = false, keysDone = false;
+                    if (TryIntFromMembers(_player, out var m0, "Currency", "currency", "Money", "money"))
+                    { money = m0; moneyDone = true; }
+                    if (TryIntFromMembers(_player, out var k0, "KeyBullets", "keys", "Keys", "keyBullets"))
+                    { keys = k0; keysDone = true; }
+
+                    // 3) Fallback: carriedConsumables container
+                    object cc = GetFieldOrProp(_player, "carriedConsumables");
+                    if (cc == null) cc = GetFieldOrProp(_player, "CarriedConsumables");
+
+                    if (cc != null)
+                    {
+                        if (!moneyDone && TryIntFromMembers(cc, out var m1, "Currency", "currency", "Money", "money"))
+                            money = m1;
+
+                        if (!keysDone && TryIntFromMembers(cc, out var k1, "KeyBullets", "keyBullets", "Keys", "keys"))
+                            keys = k1;
+
+                        // Some builds expose nested fields inside carriedConsumables; try common backing names too:
+                        if (!moneyDone && money < 0 && TryIntFromMembers(cc, out var m2, "m_currency", "m_Money"))
+                            money = m2;
+
+                        if (!keysDone && keys < 0 && TryIntFromMembers(cc, out var k2, "m_keyBullets", "m_keys"))
+                            keys = k2;
+                    }
+                }
+                catch { /* swallow; leave as -1 */ }
+            }
+
+
+
+
             string levelName = GetLevelNameSimple(); // maps to friendly proper names
 
             var tick = new PlayerTick
@@ -155,7 +199,10 @@ namespace EtG.Plugin
                 px = pos.x, py = pos.y,
                 vx = vel.x, vy = vel.y,
                 health = hp, max_health = maxHp,
-                looking_angle = lookDeg
+                looking_angle = lookDeg,
+                blanks = blanks,
+                money = money,
+                keys  = keys
             };
 
             _emit.Enqueue(tick);
@@ -324,6 +371,48 @@ namespace EtG.Plugin
             return null;
         }
 
+        private static bool TryIntFromMembers(object obj, out int value, params string[] names)
+        {
+            value = 0;
+            if (obj == null || names == null) return false;
+
+            foreach (string n in names)
+            {
+                object v = GetFieldOrProp(obj, n);
+                if (v == null) continue;
+
+                // Handle common numeric types we might see via reflection
+                try
+                {
+                    // Many EtG counters are int, but sometimes float/double
+                    if (v is int)        { value = (int)v; return true; }
+                    if (v is float)      { value = (int)(float)v; return true; }
+                    if (v is double)     { value = (int)(double)v; return true; }
+                    if (v is long)       { value = (int)(long)v; return true; }
+                    if (v is short)      { value = (int)(short)v; return true; }
+                    if (v is byte)       { value = (int)(byte)v; return true; }
+
+                    // Strings occasionally show up; try parse
+                    if (v is string)
+                    {
+                        int parsed;
+                        if (int.TryParse((string)v, out parsed)) { value = parsed; return true; }
+                        // Some counters can be serialized as floats in strings
+                        float pf;
+                        if (float.TryParse((string)v, out pf)) { value = (int)pf; return true; }
+                    }
+
+                    // Last-ditch: Convert handles many boxed primitives
+                    value = Convert.ToInt32(v, System.Globalization.CultureInfo.InvariantCulture);
+                    return true;
+                }
+                catch
+                {
+                    // ignore and try the next name
+                }
+            }
+            return false;
+        }
         private static string TryStringMember(object obj, string name)
         {
             if (obj == null) return null;

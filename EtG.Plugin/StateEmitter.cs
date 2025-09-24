@@ -101,6 +101,9 @@ namespace EtG.Plugin
             sb.Append("\"health\":").Append(t.health.ToString("R", ic)).Append(',');
             sb.Append("\"max_health\":").Append(t.max_health.ToString("R", ic));
             sb.Append("\"looking_angle\":").Append(t.looking_angle.ToString("R", ic));
+            sb.Append("\"blanks\":").Append(t.blanks).Append(',');
+            sb.Append("\"money\":").Append(t.money).Append(',');
+            sb.Append("\"keys\":").Append(t.keys);
             sb.Append('}');
             return sb.ToString();
         }
@@ -196,6 +199,9 @@ namespace EtG.Plugin
         public float health = -1f;
         public float max_health = -1f;
         public float looking_angle = -1f;
+        public int blanks = -1;
+        public int money  = -1;
+        public int keys   = -1;
     }
         internal sealed class Marker
     {

@@ -67,9 +67,9 @@ Experimental Agents / Evaluation Harness
 | - [x] `level_name`                                         | Current floor name (e.g., “Base Camp”).                                                  |
 | - [x] `player.position`                                    | `[x, y]` world coordinates (center).                                                     |
 | - [x] `player.velocity`                                    | `[x, y]` velocity vector.                                                                |
-| - []  `player.looking_angle`                               | `[x, y]` play direction vector in degrees (0–360, around player)                         |
+| - [x] `player.looking_angle`                               | Float degrees in range [0, 360), derived from `CurrentGun.CurrentAngle`                  |
 | - [x] `player.health`, `player.max_health`, `player.armor` | Vital stats from `HealthHaver`.                                                          |
-| - [] `player.blanks`, `player.money`, `player.keys`        | Consumables inventory.                                                                   |
+| - [x] `player.blanks`, `player.money`, `player.keys`       | Consumables inventory.  Integer count (≥ 0). Value is `-1` if unavailable.               |
 | - [] `player.current_gun_id`, `player.current_gun_ammo`    | Active weapon identifier and ammo count.                                                 |
 | - [] `player.passive_item_ids`                             | List of passive item pickup IDs.                                                         |
 | - [] `enemies[]`                                           | Per enemy: position, health, boss flag, distance to player.                              |
