@@ -222,7 +222,7 @@ namespace EtG.Plugin
             if (k == "#bullethell_shortname" || k == "#bullethell_name" || k == "tt_bullethell" || k == "base_bullethell")
                 return "Bullet Hell";
 
-            // --- Secret / special (from your captures and list) ---
+            // --- Secret / special ---
             if (k == "#sewers_shortname" || k == "tt_sewer" || k == "base_sewer") return "Oubliette";
             if (k == "#abbey_name" || k == "tt_cathedral" || k == "base_cathedral") return "Abbey of the True Gun";
             if (k == "#resourceful_rat_lair_shortname" || k == "ss_resourcefulrat" || k == "base_resourcefulrat")
@@ -234,14 +234,9 @@ namespace EtG.Plugin
             if (k == "tt_phobos" || k == "base_phobos") return "Phobos";
             if (k == "tt_west"   || k == "base_west")   return "The West";
 
-            // --- Modded / custom keys observed in your stream ---
-            if (k == "#sciencelab_name")   return "Science Lab";
-            if (k == "#nightclub_name")    return "Nightclub";
-            if (k == "#nazicastle_name")   return "Nazi Castle";
-            if (k == "#hegemonyspace_name")return "Hegemony Space";
-            if (k == "#terminator_name")   return "Terminator";
+            // --- Bro What ---
 
-            // --- The Past (finales) ---
+            // --- The Past ---
             if (k == "fs_pilot"   || k == "finalscenario_pilot")   return "The Past - The Pilot";
             if (k == "fs_convict" || k == "finalscenario_convict") return "The Past - The Convict";
             if (k == "fs_soldier" || k == "finalscenario_soldier") return "The Past - The Marine";
@@ -251,7 +246,7 @@ namespace EtG.Plugin
             if (k == "#bulletpast_name" || k == "fs_bullet" || k == "finalscenario_bullet")
                 return "The Past - The Bullet";
 
-            // --- Loading screens (optional normalization) ---
+            // --- Loading screens ---
             if (k == "loadingdungeon" || k == "loadingscreen") return "Loading";
 
             // Last tidy fallback: strip known prefixes to make it readable
