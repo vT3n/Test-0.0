@@ -91,18 +91,17 @@ Experimental Agents / Evaluation Harness
 ### Phase 2 – State Extraction
 - [x] Locate Unity components for player stats, enemies, projectiles, and rooms.
 - [ ] Implement safe null-checks and error handling for runtime state access.
-- [ ] Serialize a minimal JSON payload every frame (or on fixed timestep).
+- [x] Serialize a minimal JSON payload every frame (or on fixed timestep).
 - [ ] Add configuration toggles (e.g., sampling rate, log level).
 
 ### Phase 3 – Localhost Service
-- [ ] Prototype a FastAPI or Flask endpoint (`/state`) that accepts JSON payloads.
-- [ ] Implement disk logging with rolling files and timestamped directories.
-- [ ] Add basic schema validation to reject malformed data.
+- [x] Prototype listerner for localhost
+- [ ] Implement logging with files and timestamped directories.
+- [ ] Add basic schema validation to reject malformed data (e.g. Loading and Breach Areas).
 - [ ] Document service ports, environment variables, and launch scripts.
 
 ### Phase 4 – Dataset Engineering
 - [ ] Create scripts to merge raw logs, deduplicate sequences, and tag with run metadata.
-- [ ] Implement feature computation (e.g., normalized positions, one-hot item IDs).
 - [ ] Draft reward shaping heuristics (damage taken, enemies cleared, etc.).
 - [ ] Version datasets and keep changelog entries for each iteration.
 
@@ -114,7 +113,6 @@ Experimental Agents / Evaluation Harness
 
 ### Phase 6 – Control Loop Prototype (Future)
 - [ ] Design an input bridge (e.g., virtual controller) to send actions back to the game.
-- [ ] Implement safety constraints to avoid runaway behavior.
 - [ ] Test inference latency and frame-sync requirements.
 
 ---
@@ -123,14 +121,13 @@ Experimental Agents / Evaluation Harness
 
 - **Language/Runtime:** C# with .NET 9.0 for plugins; Python 3.11+ for services and ML.
 - **Dependencies:** BepInEx 5.4.x, Unity assemblies from Enter the Gungeon installation, PyTorch, FastAPI/Flask, pandas, numpy, msgpack/protobuf (future).
-- **Logging:** Consider Serilog (C#) and structlog/loguru (Python) for structured logs.
+- **Logging:** C# and (structlog/loguru) Python for logs.
 - **Configuration Management:** `.env` files for service ports, output directories, sampling intervals.
 
 ---
 
 ## Open Questions & Future Ideas
 
-- ''
 - ''
   
 ---
