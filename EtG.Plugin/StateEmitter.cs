@@ -100,6 +100,7 @@ namespace EtG.Plugin
             sb.Append("\"vy\":").Append(t.vy.ToString("R", ic)).Append(',');
             sb.Append("\"health\":").Append(t.health.ToString("R", ic)).Append(',');
             sb.Append("\"max_health\":").Append(t.max_health.ToString("R", ic));
+            sb.Append("\"looking_angle\":").Append(t.looking_angle.ToString("R", ic));
             sb.Append('}');
             return sb.ToString();
         }
@@ -194,6 +195,7 @@ namespace EtG.Plugin
         public float vx, vy;
         public float health = -1f;
         public float max_health = -1f;
+        public float looking_angle = -1f;
     }
         internal sealed class Marker
     {

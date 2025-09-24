@@ -78,6 +78,9 @@ namespace EtG.Plugin
             Vector2 vel = Vector2.zero;
             float hp = -1f, maxHp = -1f;
 
+            // default looking angle
+            float lookDeg = -1f;
+
             if (_player != null)
             {
                 // Position
@@ -121,6 +124,25 @@ namespace EtG.Plugin
                     }
                 }
                 catch { }
+
+                // Looking angle via CurrentGun.CurrentAngle (degrees)
+                try
+                {
+                    object gun = GetFieldOrProp(_player, "CurrentGun");
+                    if (gun == null) gun = GetFieldOrProp(_player, "currentGun"); // field fallback
+
+                    if (gun != null)
+                    {
+                        object angObj = GetFieldOrProp(gun, "CurrentAngle"); // property
+                        if (angObj is float raw)
+                        {
+                            raw %= 360f;
+                            if (raw < 0f) raw += 360f;
+                            lookDeg = raw; // [0,360)
+                        }
+                    }
+                }
+                catch { }
             }
 
             string levelName = GetLevelNameSimple(); // maps to friendly proper names
@@ -132,7 +154,8 @@ namespace EtG.Plugin
                 level_name = levelName,
                 px = pos.x, py = pos.y,
                 vx = vel.x, vy = vel.y,
-                health = hp, max_health = maxHp
+                health = hp, max_health = maxHp,
+                looking_angle = lookDeg
             };
 
             _emit.Enqueue(tick);
