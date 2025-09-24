@@ -78,6 +78,7 @@ Experimental Agents / Evaluation Harness
 | - [] `meta.run_id`                                        | Unique identifier per run/session (helps join multi-file logs).                            |
 | - [] `meta.version`                                       | Schema version for backward compatibility.                                                 |
 
+![plot](./outlisten.png)
 ---
 
 ## Milestones & Tasks
