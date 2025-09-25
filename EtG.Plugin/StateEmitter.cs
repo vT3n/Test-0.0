@@ -92,7 +92,7 @@ namespace EtG.Plugin
             var sb = new StringBuilder(256);
             sb.Append('{');
             sb.Append("\"sequence\":").Append(t.sequence).Append(',');
-            sb.Append("\"realtime\":").Append(t.realtime.ToString("R", ic)).Append(',');
+            sb.Append("\"realtime\":").Append(t.realtime.ToString("N3", ic)).Append(',');
             sb.Append("\"level_name\":\"").Append(Escape(t.level_name)).Append("\",");
             sb.Append("\"px\":").Append(t.px.ToString("R", ic)).Append(',');
             sb.Append("\"py\":").Append(t.py.ToString("R", ic)).Append(',');
