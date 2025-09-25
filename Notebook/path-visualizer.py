@@ -1,6 +1,7 @@
 import json, os
 from collections import defaultdict
 import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection
 import numpy as np
 
 def cleaning_data(data):
@@ -22,7 +23,8 @@ def load_run_data(path):
 
 def random_file(folder):
     files = [f for f in os.listdir(folder) if f.endswith('.jsonl')]
-    return os.path.join(folder, files[0]) if files else None
+    i = np.random.randint(0, len(files))
+    return os.path.join(folder, files[i]) if files else None
 
 def recent_file(folder):
     files = [f for f in os.listdir(folder) if f.endswith('.jsonl')]
@@ -39,10 +41,19 @@ def points_by_level(records):
 
 def plot_list(points, name, same_tol=10):
     n = len(points)
-    if n < 2:
+    if n == 0:
+        plt.title(name)
+        return
+    if n == 1:
+        x, y = points[0]
+        plt.scatter([x], [y], s=60)
+        plt.text(x, y, "Start", fontsize=9, ha='center', va='center',
+                 color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.8))
+        plt.text(x, y, "End", fontsize=9, ha='center', va='center',
+                 color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.8))
+        plt.title(name)
         return
 
-    # gradient colors
     t = np.linspace(0, 1, max(n - 1, 1))
     start = np.array([0.3, 0.3, 1.0])
     end   = np.array([1.0, 0.3, 0.3])
@@ -59,53 +70,45 @@ def plot_list(points, name, same_tol=10):
         placed_counts[key] += 1
         if idx == 0:
             return 0.0, 0.0
-        r = 3.5  # pixels
-        angle = (idx - 1) * np.pi  
+        r = 4
+        angle = (idx - 1) * np.pi
         return r * np.cos(angle), r * np.sin(angle)
 
+    pts = np.asarray(points, float)
+    segs = np.stack([pts[:-1], pts[1:]], axis=1)
+    lens = np.hypot(pts[1:,0]-pts[:-1,0], pts[1:,1]-pts[:-1,1])
+    short_mask = lens <= 20
+
+    ax = plt.gca()
+    if np.any(short_mask):
+        lc = LineCollection(segs[short_mask], colors=[colors[i] for i in np.nonzero(short_mask)[0]], linewidths=2)
+        ax.add_collection(lc)
+        ax.autoscale()
+
+    jump_idx = np.nonzero(~short_mask)[0]
     tp = 1
-    markersize = 10
-    for i in range(n - 1):
-        x1, y1 = points[i]
-        x2, y2 = points[i + 1]
-        length = np.hypot(x2 - x1, y2 - y1)
-        
-        if i == 0:
-            plt.text(x1, y1, "Start", fontsize=9, ha='center', va='center',
-                     color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.8))
-
-        if i == (n - 2):
-            plt.text(x2, y2, "End", fontsize=9, ha='center', va='center',
-                     color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.8))
-                     
-        if length > 20:  # jump/teleport
-            c = colors[i]
-
-            # point 1
-            plt.plot(x1, y1, 'o', color=c, markersize=markersize)
-            dx, dy = offset_for(x1, y1)
+    for i in jump_idx:
+        for (x, y) in [pts[i], pts[i+1]]:
+            dx, dy = offset_for(x, y)
             if dx or dy:
-                plt.plot([x1, x1 + dx], [y1, y1 + dy], linewidth=1, alpha=0.3, color=c)
-            plt.text(x1 + dx, y1 + dy, str(tp), fontsize=9, ha='center', va='center',
-                     color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.55))
-
+                ax.add_collection(LineCollection([[[x, y], [x+dx, y+dy]]], linewidths=1, alpha=0.3, colors=[colors[i]]))
+            plt.text(x+dx, y+dy, str(tp), fontsize=9, ha='center', va='center',
+                     color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.7))
             tp += 1
-            
-            # point 2
-            plt.plot(x2, y2, 'o', color=c, markersize=markersize)
-            dx2, dy2 = offset_for(x2, y2)
-            if dx2 or dy2:
-                plt.plot([x2, x2 + dx2], [y2, y2 + dy2], linewidth=1, alpha=0.3, color=c)
-            plt.text(x2 + dx2, y2 + dy2, str(tp), fontsize=9, ha='center', va='center',
-                     color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.55))
 
-            tp += 1
-        else:
-            plt.plot([x1, x2], [y1, y2], color=colors[i], linewidth=2)
+    pad = 1.0
 
+    x1, y1 = points[0]
+    x2, y2 = points[-1]
+    plt.scatter(pts[:,0], pts[:,1], s=1, alpha=0.35)
+    ax.set_xlim(pts[:,0].min()-pad, pts[:,0].max()+pad)
+    ax.set_ylim(pts[:,1].min()-pad, pts[:,1].max()+pad)
+    plt.text(x1, y1, "Start", fontsize=9, ha='center', va='center',
+             color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.8))
+    plt.text(x2, y2, "End", fontsize=9, ha='center', va='center',
+             color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.8))
     plt.title(name)
-    plt.xlabel("px")
-    plt.ylabel("py")
+
 
 file_path = "Notebook/Runs"
 # file_path = random_file(file_path)
