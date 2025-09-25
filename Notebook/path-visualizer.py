@@ -26,7 +26,7 @@ def random_file(folder):
 
 def recent_file(folder):
     files = [f for f in os.listdir(folder) if f.endswith('.jsonl')]
-    files.sort(key=lambda f: int(f.split('_')[1].split('.')[0]))  # convert to int
+    files.sort(key=lambda f: int(f.split('_')[1].split('.')[0])) 
     return os.path.join(folder, files[-1]) if files else None
 
 def points_by_level(records):
@@ -37,29 +37,30 @@ def points_by_level(records):
             by_level[lvl].append((float(r["px"]), float(r["py"])))
     return by_level
 
-def plot_list(points, name, same_tol=2.0):
+def plot_list(points, name, same_tol=10):
     n = len(points)
     if n < 2:
         return
 
-    # gradient colors for points
+    # gradient colors
     t = np.linspace(0, 1, max(n - 1, 1))
     start = np.array([0.3, 0.3, 1.0])
     end   = np.array([1.0, 0.3, 0.3])
     colors = [tuple(start*(1 - val) + end*val) for val in t]
 
-    # counts many labels already placed near the coordinate
-    def key_xy(x, y):
+    def bucket(x, y):
         return (int(round(x / same_tol)), int(round(y / same_tol)))
 
     placed_counts = defaultdict(int)
 
     def offset_for(x, y):
-        k = key_xy(x, y)
-        idx = placed_counts[k]
-        placed_counts[k] += 1
+        key = bucket(x, y)
+        idx = placed_counts[key]
+        placed_counts[key] += 1
+        if idx == 0:
+            return 0.0, 0.0
         r = 3.5  # pixels
-        angle = (idx - 1) * (np.pi / 3 )  # 45° steps
+        angle = (idx - 1) * np.pi  
         return r * np.cos(angle), r * np.sin(angle)
 
     tp = 1
@@ -68,9 +69,19 @@ def plot_list(points, name, same_tol=2.0):
         x1, y1 = points[i]
         x2, y2 = points[i + 1]
         length = np.hypot(x2 - x1, y2 - y1)
+        
+        if i == 0:
+            plt.text(x1, y1, "Start", fontsize=9, ha='center', va='center',
+                     color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.8))
 
-        if length > 20:  # Checks if Teleported
+        if i == (n - 2):
+            plt.text(x2, y2, "End", fontsize=9, ha='center', va='center',
+                     color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.8))
+                     
+        if length > 20:  # jump/teleport
             c = colors[i]
+
+            # point 1
             plt.plot(x1, y1, 'o', color=c, markersize=markersize)
             dx, dy = offset_for(x1, y1)
             if dx or dy:
@@ -78,6 +89,9 @@ def plot_list(points, name, same_tol=2.0):
             plt.text(x1 + dx, y1 + dy, str(tp), fontsize=9, ha='center', va='center',
                      color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.55))
 
+            tp += 1
+            
+            # point 2
             plt.plot(x2, y2, 'o', color=c, markersize=markersize)
             dx2, dy2 = offset_for(x2, y2)
             if dx2 or dy2:
@@ -86,7 +100,7 @@ def plot_list(points, name, same_tol=2.0):
                      color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.55))
 
             tp += 1
-        else: # Checks if not Teleported, connects the points
+        else:
             plt.plot([x1, x2], [y1, y2], color=colors[i], linewidth=2)
 
     plt.title(name)
