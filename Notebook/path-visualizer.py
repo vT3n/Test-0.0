@@ -109,12 +109,11 @@ def plot_list(points, name, same_tol=10):
              color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.8))
     plt.title(name)
 
-
 file_path = "Notebook/Runs"
 # file_path = random_file(file_path)
 file_path = recent_file(file_path)
 
-data = list(load_run_data(file_path))
+data = load_run_data(file_path)
 data = cleaning_data(data)
 
 # data_dict = data[1]
@@ -134,7 +133,8 @@ for name, points in levels.items():
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     save_path = os.path.join(save_dir, f"{name}.png")
-    fig.savefig(save_path)
+    # fig.savefig(save_path)
+    # print(f"Saved to {save_path}")
 
 plt.show()  
 
