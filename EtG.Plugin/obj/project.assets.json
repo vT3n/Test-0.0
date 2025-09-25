@@ -187,20 +187,20 @@
     "net9.0": []
   },
   "packageFolders": {
-    "C:\\Users\\thete\\.nuget\\packages\\": {}
+    "C:\\Users\\andys\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\thete\\Documents\\Github\\Test-0.0\\EtG.Plugin\\EtG.Plugin.csproj",
+      "projectUniqueName": "C:\\Users\\andys\\Documents\\Github\\Test-0.0\\EtG.Plugin\\EtG.Plugin.csproj",
       "projectName": "EtG.Plugin",
-      "projectPath": "C:\\Users\\thete\\Documents\\Github\\Test-0.0\\EtG.Plugin\\EtG.Plugin.csproj",
-      "packagesPath": "C:\\Users\\thete\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\thete\\Documents\\Github\\Test-0.0\\EtG.Plugin\\obj\\",
+      "projectPath": "C:\\Users\\andys\\Documents\\Github\\Test-0.0\\EtG.Plugin\\EtG.Plugin.csproj",
+      "packagesPath": "C:\\Users\\andys\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\andys\\Documents\\Github\\Test-0.0\\EtG.Plugin\\obj\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
       "configFilePaths": [
-        "C:\\Users\\thete\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\andys\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net35",

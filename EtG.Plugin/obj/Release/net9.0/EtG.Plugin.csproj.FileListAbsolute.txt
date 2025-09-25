@@ -10,3 +10,15 @@ C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\EtG.Plugi
 C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\refint\EtG.Plugin.dll
 C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\EtG.Plugin.pdb
 C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\ref\EtG.Plugin.dll
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\bin\Release\net9.0\EtG.Plugin.deps.json
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\bin\Release\net9.0\EtG.Plugin.dll
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\bin\Release\net9.0\EtG.Plugin.pdb
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\EtG.Plugin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\EtG.Plugin.AssemblyInfoInputs.cache
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\EtG.Plugin.AssemblyInfo.cs
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\EtG.Plugin.csproj.CoreCompileInputs.cache
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\EtG.Plugin.sourcelink.json
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\EtG.Plugin.dll
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\refint\EtG.Plugin.dll
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\EtG.Plugin.pdb
+C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net9.0\ref\EtG.Plugin.dll

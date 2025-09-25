@@ -99,8 +99,8 @@ namespace EtG.Plugin
             sb.Append("\"vx\":").Append(t.vx.ToString("R", ic)).Append(',');
             sb.Append("\"vy\":").Append(t.vy.ToString("R", ic)).Append(',');
             sb.Append("\"health\":").Append(t.health.ToString("R", ic)).Append(',');
-            sb.Append("\"max_health\":").Append(t.max_health.ToString("R", ic));
-            sb.Append("\"looking_angle\":").Append(t.looking_angle.ToString("R", ic));
+            sb.Append("\"max_health\":").Append(t.max_health.ToString("R", ic)).Append(','); // <-- add comma
+            sb.Append("\"looking_angle\":").Append(t.looking_angle.ToString("R", ic)).Append(','); // <-- add comma
             sb.Append("\"blanks\":").Append(t.blanks).Append(',');
             sb.Append("\"money\":").Append(t.money).Append(',');
             sb.Append("\"keys\":").Append(t.keys);
