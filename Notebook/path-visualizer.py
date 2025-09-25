@@ -17,6 +17,11 @@ def random_file(folder):
     files = [f for f in os.listdir(folder) if f.endswith('.jsonl')]
     return os.path.join(folder, files[0]) if files else None
 
+def recent_file(folder):
+    files = [f for f in os.listdir(folder) if f.endswith('.jsonl') and '_' in f]
+    files.sort(key=lambda f: int(f.split('_')[1].split('.')[0]))  # convert to int
+    return os.path.join(folder, files[-1]) if files else None
+
 def points_by_level(records):
     by_level = defaultdict(list)
     for r in records:
@@ -41,8 +46,9 @@ def plot_list(points, name):
     plt.ylabel("py")
 
 
-file_path = "Notebook/Raw-Runs"
-file_path = random_file(file_path)
+file_path = "Notebook/Runs"
+# file_path = random_file(file_path)
+file_path = recent_file(file_path)
 
 data = list(load_run_data(file_path))
 
@@ -58,6 +64,11 @@ for name, points in levels.items():
     print(len(points), name)
     fig = plt.figure()        
     plot_list(points, name)
-    
+    save_dir = "Notebook/Plots"
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    save_path = os.path.join(save_dir, f"{name}.png")
+    fig.savefig(save_path)
 
 plt.show()  
+
