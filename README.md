@@ -8,7 +8,7 @@ This project is me trying to capture **Enter the Gungeon** game state through **
 
 ## Objectives
 
-1. **Instrument the Game:** Use a BepInEx 5.4.x plugin (built with .NET 9.0) to access the live Unity runtime and extract player, enemy, projectile, and room metadata.
+1. **Instrument the Game:** Use a BepInEx 5.4.x plugin (built with Net 9.0 Runtime) to access the live Unity runtime and extract player, enemy, projectile, and room metadata.
 2. **Stream Observations:** Serialize each frame’s state to JSON and push it to a localhost API for storage and downstream processing.
 3. **Curate Datasets:** Organize captured logs into clean, versioned datasets suitable for both supervised and reinforcement learning experiments.
 4. **Model Training:** Prototype training pipelines in PyTorch that learn from the captured data (predict next actions, evaluate reward functions, etc.).
@@ -24,7 +24,7 @@ for a pytorch model
 Enter the Gungeon (Unity)
         │
         ▼
-BepInEx Plugin (.NET 9.0)
+BepInEx Plugin (Net 9.0 Runtime)
         │  (Hooks into Unity API)
         ▼
 Game State Extractor
@@ -48,7 +48,7 @@ Experimental Agents / Evaluation Harness
 
 | Path/Module                | Purpose                                                                 |
 |----------------------------|-------------------------------------------------------------------------|
-| `GungeonRLTracker/`        | Unity/BepInEx plugin source (C# / .NET 9.0).                            |
+| `GungeonRLTracker/`        | Unity/BepInEx plugin source (C# / Net 9.0 Runtime).                            |
 | `scripts/`                 | Tooling for log parsing, dataset assembly, schema validation.           |
 | `notebooks/`               | Exploratory, prototyping reward functions, sanity checks.               |
 | `training/`                | PyTorch training, models, utilities.                                    |
@@ -86,7 +86,7 @@ Experimental Agents / Evaluation Harness
 
 ### Phase 1 – BepInEx Setup
 - [x] Install BepInEx 5.4.x into Enter the Gungeon directory.
-- [x] Scaffold a .NET 9.0 class library project targeting BepInEx plugin conventions.
+- [x] Scaffold a Net 9.0 Runtime class library project targeting BepInEx plugin conventions.
 - [x] Verify plugin loads (simple console/log output).
 
 ### Phase 2 – State Extraction
@@ -120,7 +120,7 @@ Experimental Agents / Evaluation Harness
 
 ## Tooling & Environment Notes
 
-- **Language/Runtime:** C# with .NET 9.0 for plugins; Python 3.11+ for services and ML.
+- **Language/Runtime:** C# with Net 9.0 Runtime for plugins; Python 3.11+ for services and ML.
 - **Dependencies:** BepInEx 5.4.x, Unity assemblies from Enter the Gungeon installation, PyTorch, FastAPI/Flask, pandas, numpy, msgpack/protobuf (future).
 - **Logging:** C# and (structlog/loguru) Python for logs.
 - **Configuration Management:** `.env` files for service ports, output directories, sampling intervals.
