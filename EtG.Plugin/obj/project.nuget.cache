@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "wS+9TK8gYOU=",
+  "dgSpecHash": "yELbFyFk4K4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\andys\\Documents\\Github\\Test-0.0\\EtG.Plugin\\EtG.Plugin.csproj",
+  "projectFilePath": "C:\\Users\\thete\\Documents\\Github\\Test-0.0\\EtG.Plugin\\EtG.Plugin.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\andys\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.3\\microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
-    "C:\\Users\\andys\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net35\\1.0.3\\microsoft.netframework.referenceassemblies.net35.1.0.3.nupkg.sha512"
+    "C:\\Users\\thete\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.3\\microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "C:\\Users\\thete\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net35\\1.0.3\\microsoft.netframework.referenceassemblies.net35.1.0.3.nupkg.sha512"
   ],
   "logs": []
 }

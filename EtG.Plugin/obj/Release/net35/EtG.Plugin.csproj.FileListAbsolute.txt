@@ -1,13 +1,3 @@
-C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\bin\Release\net35\EtG.Plugin.dll
-C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\bin\Release\net35\EtG.Plugin.pdb
-C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.csproj.AssemblyReference.cache
-C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.AssemblyInfoInputs.cache
-C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.AssemblyInfo.cs
-C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.csproj.CoreCompileInputs.cache
-C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.sourcelink.json
-C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.dll
-C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.pdb
 C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\bin\Release\net35\EtG.Plugin.dll
 C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\bin\Release\net35\EtG.Plugin.pdb
 C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.csproj.AssemblyReference.cache
@@ -18,3 +8,13 @@ C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin
 C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.sourcelink.json
 C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.dll
 C:\Users\andys\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.pdb
+C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\bin\Release\net35\EtG.Plugin.dll
+C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\bin\Release\net35\EtG.Plugin.pdb
+C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.csproj.AssemblyReference.cache
+C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.AssemblyInfoInputs.cache
+C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.AssemblyInfo.cs
+C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.csproj.CoreCompileInputs.cache
+C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.sourcelink.json
+C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.dll
+C:\Users\thete\Documents\Github\Test-0.0\EtG.Plugin\obj\Release\net35\EtG.Plugin.pdb

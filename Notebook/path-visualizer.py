@@ -3,6 +3,13 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 import numpy as np
 
+def cleaning_data(data):
+    cleaned_data = []
+    for row in data:
+        if str(row.get("health", "-1")) != "-1":
+            cleaned_data.append(row)
+    return cleaned_data
+
 def load_run_data(path):
     with open(path, 'r', encoding='utf-8') as f:
         for line in f:
@@ -18,7 +25,7 @@ def random_file(folder):
     return os.path.join(folder, files[0]) if files else None
 
 def recent_file(folder):
-    files = [f for f in os.listdir(folder) if f.endswith('.jsonl') and '_' in f]
+    files = [f for f in os.listdir(folder) if f.endswith('.jsonl')]
     files.sort(key=lambda f: int(f.split('_')[1].split('.')[0]))  # convert to int
     return os.path.join(folder, files[-1]) if files else None
 
@@ -51,10 +58,12 @@ file_path = "Notebook/Runs"
 file_path = recent_file(file_path)
 
 data = list(load_run_data(file_path))
+data = cleaning_data(data)
 
-# data_dict = data[199]
+# data_dict = data[1]
 # print(data_dict.keys(), "\n")
 # print(data_dict.items(), "\n")
+# print(data)
 
 levels = points_by_level(data)
 
