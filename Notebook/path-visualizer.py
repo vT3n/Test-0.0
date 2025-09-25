@@ -37,21 +37,61 @@ def points_by_level(records):
             by_level[lvl].append((float(r["px"]), float(r["py"])))
     return by_level
 
-def plot_list(points, name):
+def plot_list(points, name, same_tol=2.0):
     n = len(points)
-    t = np.linspace(0, 1, n - 1)
-    start = np.array([0.3, 0.3, 1.0]) 
-    end   = np.array([1.0, 0.3, 0.3]) 
+    if n < 2:
+        return
+
+    # gradient colors for points
+    t = np.linspace(0, 1, max(n - 1, 1))
+    start = np.array([0.3, 0.3, 1.0])
+    end   = np.array([1.0, 0.3, 0.3])
     colors = [tuple(start*(1 - val) + end*val) for val in t]
 
-    for i in range(len(points) - 1):
+    # counts many labels already placed near the coordinate
+    def key_xy(x, y):
+        return (int(round(x / same_tol)), int(round(y / same_tol)))
+
+    placed_counts = defaultdict(int)
+
+    def offset_for(x, y):
+        k = key_xy(x, y)
+        idx = placed_counts[k]
+        placed_counts[k] += 1
+        r = 3.5  # pixels
+        angle = (idx - 1) * (np.pi / 3 )  # 45° steps
+        return r * np.cos(angle), r * np.sin(angle)
+
+    tp = 1
+    markersize = 10
+    for i in range(n - 1):
         x1, y1 = points[i]
         x2, y2 = points[i + 1]
-        plt.plot([x1, x2], [y1, y2], color=colors[i], linewidth=2)
+        length = np.hypot(x2 - x1, y2 - y1)
+
+        if length > 20:  # Checks if Teleported
+            c = colors[i]
+            plt.plot(x1, y1, 'o', color=c, markersize=markersize)
+            dx, dy = offset_for(x1, y1)
+            if dx or dy:
+                plt.plot([x1, x1 + dx], [y1, y1 + dy], linewidth=1, alpha=0.3, color=c)
+            plt.text(x1 + dx, y1 + dy, str(tp), fontsize=9, ha='center', va='center',
+                     color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.55))
+
+            plt.plot(x2, y2, 'o', color=c, markersize=markersize)
+            dx2, dy2 = offset_for(x2, y2)
+            if dx2 or dy2:
+                plt.plot([x2, x2 + dx2], [y2, y2 + dy2], linewidth=1, alpha=0.3, color=c)
+            plt.text(x2 + dx2, y2 + dy2, str(tp), fontsize=9, ha='center', va='center',
+                     color='white', bbox=dict(boxstyle='round,pad=0.18', fc='black', ec='none', alpha=0.55))
+
+            tp += 1
+        else: # Checks if not Teleported, connects the points
+            plt.plot([x1, x2], [y1, y2], color=colors[i], linewidth=2)
+
     plt.title(name)
     plt.xlabel("px")
     plt.ylabel("py")
-
 
 file_path = "Notebook/Runs"
 # file_path = random_file(file_path)
