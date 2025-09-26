@@ -129,7 +129,7 @@ for name, points in levels.items():
     print(len(points), name)
     fig = plt.figure()        
     plot_list(points, name)
-    save_dir = "Notebook/Plots"
+    save_dir = "Notebook/out"
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     save_path = os.path.join(save_dir, f"{name}.png")

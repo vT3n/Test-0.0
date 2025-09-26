@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using System.Reflection;
+using Dungeonator;
 
 namespace EtG.Plugin
 {
@@ -23,7 +24,11 @@ namespace EtG.Plugin
         private float _accum = 0f;
 
         private Component _player; // cached PlayerController instance (if found)
-        private Type _playerType;
+        private Type _playerType;  
+
+        private string _lastWalkmapKey = null;  
+        private bool _pitsAllowed = false; // set true if you want pits merged into walkable
+
 
         private void Awake()
         {
@@ -55,6 +60,7 @@ namespace EtG.Plugin
             _accum = 0f;
 
             CaptureTick();
+            TryEmitWalkmapOnce();
         }
 
         private void CaptureTick()
@@ -187,8 +193,6 @@ namespace EtG.Plugin
             }
 
 
-
-
             string levelName = GetLevelNameSimple(); // maps to friendly proper names
 
             var tick = new PlayerTick
@@ -266,6 +270,202 @@ namespace EtG.Plugin
                 return "Unknown";
             }
         }
+
+        private void TryEmitWalkmapOnce()
+        {
+            var dungeon = GetDungeon();
+            if (dungeon == null || dungeon.data == null) return;
+
+            string levelName = GetLevelNameSimple();
+            int seed = dungeon.GenerationSeed;
+            string key = levelName + "#" + seed;
+            if (_lastWalkmapKey == key) return;
+
+            string json = BuildFloorWalkmapJson(dungeon, levelName, seed, _pitsAllowed);
+            if (!string.IsNullOrEmpty(json))
+            {
+                _emit.EnqueueRaw(json);
+                _lastWalkmapKey = key;
+                LogSrc.LogInfo("Emitted floor_walkmap: " + key);
+            }
+        }
+
+        private Dungeon GetDungeon()
+        {
+            try
+            {
+                Type gmType = TryGetType("GameManager");
+                if (gmType == null) return null;
+                object inst = null;
+
+                var p = gmType.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                if (p != null) inst = p.GetValue(null, null);
+                if (inst == null)
+                {
+                    var f = gmType.GetField("Instance", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    if (f != null) inst = f.GetValue(null);
+                }
+                if (inst == null) return null;
+
+                object d = GetFieldOrProp(inst, "Dungeon");
+                if (d == null) d = GetFieldOrProp(inst, "m_Dungeon");
+                if (d == null) d = GetFieldOrProp(inst, "dungeon");
+                return d as Dungeon;
+            }
+            catch { return null; }
+        }
+
+        private string BuildFloorWalkmapJson(Dungeon dungeon, string levelName, int seed, bool pitsAllowed)
+        {
+            var grid = dungeon.data;
+            var rooms = grid.rooms;
+            if (rooms == null || rooms.Count == 0) return null;
+
+            var sb = new System.Text.StringBuilder(32768);
+            var ic = System.Globalization.CultureInfo.InvariantCulture;
+
+            sb.Append('{');
+            sb.Append("\"event\":\"floor_walkmap\",");
+            sb.Append("\"level_name\":\"").Append(Escape(levelName)).Append("\",");
+            sb.Append("\"floor_seed\":").Append(seed).Append(',');
+            sb.Append("\"grid_origin\":").Append("{\"x\":0,\"y\":0},");
+            sb.Append("\"cell_size\":1,");
+            sb.Append("\"rooms\":[");
+
+            for (int rid = 0; rid < rooms.Count; rid++)
+            {
+                var r = rooms[rid];
+                var pos = r.area.basePosition;
+                var size = r.area.dimensions;
+
+                sb.Append('{');
+                sb.Append("\"room_id\":").Append(rid).Append(',');
+                sb.Append("\"base_x\":").Append(pos.x).Append(',');
+                sb.Append("\"base_y\":").Append(pos.y).Append(',');
+                sb.Append("\"width\":").Append(size.x).Append(',');
+                sb.Append("\"height\":").Append(size.y).Append(',');
+
+                // walk_rle
+                sb.Append("\"walk_rle\":[");
+                bool firstRun = true;
+
+                for (int y = pos.y; y < pos.y + size.y; y++)
+                {
+                    int runStartWalk = -1;
+
+                    for (int x = pos.x; x < pos.x + size.x; x++)
+                    {
+                        var cell = grid.cellData[x][y];
+                        string t = SafeCellType(cell);
+                        bool isTrap = IsTrap(cell);
+                        if (isTrap)
+                        {
+                            if (runStartWalk >= 0)
+                            {
+                                if (!firstRun) sb.Append(',');
+                                sb.Append("{\"y\":").Append(y).Append(",\"x0\":").Append(runStartWalk).Append(",\"x1\":").Append(x - 1).Append('}');
+                                firstRun = false;
+                                runStartWalk = -1;
+                            }
+                            continue;
+                        }
+                        bool isFloor = (t == "FLOOR");
+                        bool isPit   = (t == "PIT");
+                        bool walk    = isFloor || (pitsAllowed && isPit);
+
+                        if (walk)
+                        {
+                            if (runStartWalk < 0) runStartWalk = x;
+                        }
+                        else
+                        {
+                            if (runStartWalk >= 0)
+                            {
+                                if (!firstRun) sb.Append(',');
+                                sb.Append("{\"y\":").Append(y).Append(",\"x0\":").Append(runStartWalk).Append(",\"x1\":").Append(x - 1).Append('}');
+                                firstRun = false;
+                                runStartWalk = -1;
+                            }
+                        }
+                    }
+                    if (runStartWalk >= 0)
+                    {
+                        if (!firstRun) sb.Append(',');
+                        sb.Append("{\"y\":").Append(y).Append(",\"x0\":").Append(runStartWalk).Append(",\"x1\":").Append(pos.x + size.x - 1).Append('}');
+                        firstRun = false;
+                    }
+                }
+                sb.Append("],");
+
+                // pit_rle
+                sb.Append("\"pit_rle\":[");
+                bool firstPit = true;
+
+                for (int y = pos.y; y < pos.y + size.y; y++)
+                {
+                    int runStartPit = -1;
+
+                    for (int x = pos.x; x < pos.x + size.x; x++)
+                    {
+                        var cell = grid.cellData[x][y];
+                        string t = SafeCellType(cell);
+                        bool isTrap = IsTrap(cell);
+                        if (isTrap)
+                        {
+                            if (runStartPit >= 0)
+                            {
+                                if (!firstPit) sb.Append(',');
+                                sb.Append("{\"y\":").Append(y).Append(",\"x0\":").Append(runStartPit).Append(",\"x1\":").Append(x - 1).Append('}');
+                                firstPit = false;
+                                runStartPit = -1;
+                            }
+                            continue;
+                        }
+                        bool isPit = (t == "PIT");
+
+                        if (isPit)
+                        {
+                            if (runStartPit < 0) runStartPit = x;
+                        }
+                        else
+                        {
+                            if (runStartPit >= 0)
+                            {
+                                if (!firstPit) sb.Append(',');
+                                sb.Append("{\"y\":").Append(y).Append(",\"x0\":").Append(runStartPit).Append(",\"x1\":").Append(x - 1).Append('}');
+                                firstPit = false;
+                                runStartPit = -1;
+                            }
+                        }
+                    }
+                    if (runStartPit >= 0)
+                    {
+                        if (!firstPit) sb.Append(',');
+                        sb.Append("{\"y\":").Append(y).Append(",\"x0\":").Append(runStartPit).Append(",\"x1\":").Append(pos.x + size.x - 1).Append('}');
+                        firstPit = false;
+                    }
+                }
+                sb.Append(']');
+
+                sb.Append('}');
+                if (rid + 1 < rooms.Count) sb.Append(',');
+            }
+
+            sb.Append("]}");
+            return sb.ToString();
+        }
+
+        private static string SafeCellType(DungeonData.CellData cell)
+        {
+            try { return cell.type.ToString(); } catch { return "UNKNOWN"; }
+        }
+
+        private static bool IsTrap(DungeonData.CellData cell)
+        {
+            // wire your spike/fire/etc flags here later; false for now
+            return false;
+        }
+
 
         /// <summary>
         /// Return the proper floor name, mapping:

@@ -41,6 +41,23 @@ namespace EtG.Plugin
             return sb.ToString();
         }
 
+        
+        public void EnqueueRaw(string json)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(json)) return;
+                lock (_lock)
+                {
+                    if (_queue.Count > 2048) _queue.Dequeue();
+                    _queue.Enqueue(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                Plugin.LogSrc.LogWarning("EnqueueRaw failed: " + ex.Message);
+            }
+        }
         public void Enqueue(Marker m)
         {
             try
