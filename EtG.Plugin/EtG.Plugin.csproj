@@ -35,12 +35,30 @@
       <HintPath>$(BEPINEX_DIR)\core\0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
+
+    <!-- Unity (EtG-era) -->
     <Reference Include="UnityEngine">
       <HintPath>$(GAME_MANAGED)\UnityEngine.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule" Condition="Exists('$(GAME_MANAGED)\UnityEngine.CoreModule.dll')">
       <HintPath>$(GAME_MANAGED)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <!-- Game code (provides Dungeonator/Dungeon/DungeonData) -->
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GAME_MANAGED)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass" Condition="Exists('$(GAME_MANAGED)\Assembly-CSharp-firstpass.dll')">
+      <HintPath>$(GAME_MANAGED)\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <!-- Some EtG builds ship Dungeonator separately -->
+    <Reference Include="Dungeonator" Condition="Exists('$(GAME_MANAGED)\Dungeonator.dll')">
+      <HintPath>$(GAME_MANAGED)\Dungeonator.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

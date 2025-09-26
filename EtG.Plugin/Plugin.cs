@@ -212,7 +212,6 @@ namespace EtG.Plugin
             _emit.Enqueue(tick);
         }
 
-        // --- Simplified level name: map engine keys/ids/prefabs to proper names ---
         private string GetLevelNameSimple()
         {
             try
@@ -277,11 +276,10 @@ namespace EtG.Plugin
             if (dungeon == null || dungeon.data == null) return;
 
             string levelName = GetLevelNameSimple();
-            int seed = dungeon.GenerationSeed;
-            string key = levelName + "#" + seed;
+            string key = levelName;
             if (_lastWalkmapKey == key) return;
 
-            string json = BuildFloorWalkmapJson(dungeon, levelName, seed, _pitsAllowed);
+            string json = BuildFloorWalkmapJson(dungeon, levelName, _pitsAllowed);
             if (!string.IsNullOrEmpty(json))
             {
                 _emit.EnqueueRaw(json);
@@ -315,7 +313,7 @@ namespace EtG.Plugin
             catch { return null; }
         }
 
-        private string BuildFloorWalkmapJson(Dungeon dungeon, string levelName, int seed, bool pitsAllowed)
+        private string BuildFloorWalkmapJson(Dungeon dungeon, string levelName, bool pitsAllowed)
         {
             var grid = dungeon.data;
             var rooms = grid.rooms;
@@ -327,7 +325,6 @@ namespace EtG.Plugin
             sb.Append('{');
             sb.Append("\"event\":\"floor_walkmap\",");
             sb.Append("\"level_name\":\"").Append(Escape(levelName)).Append("\",");
-            sb.Append("\"floor_seed\":").Append(seed).Append(',');
             sb.Append("\"grid_origin\":").Append("{\"x\":0,\"y\":0},");
             sb.Append("\"cell_size\":1,");
             sb.Append("\"rooms\":[");
@@ -455,25 +452,18 @@ namespace EtG.Plugin
             return sb.ToString();
         }
 
-        private static string SafeCellType(DungeonData.CellData cell)
+
+        private static string SafeCellType(CellData cell) // or Dungeonator.CellData
         {
             try { return cell.type.ToString(); } catch { return "UNKNOWN"; }
         }
 
-        private static bool IsTrap(DungeonData.CellData cell)
+        private static bool IsTrap(CellData cell) // or Dungeonator.CellData
         {
-            // wire your spike/fire/etc flags here later; false for now
+            // TODO: spike/fire/etc. detection if you want to exclude them
             return false;
         }
 
-
-        /// <summary>
-        /// Return the proper floor name, mapping:
-        /// - Localization keys (#FOO_NAME / #FOO_SHORTNAME),
-        /// - IDs (tt_*, fs_*, ss_*),
-        /// - Prefab paths (Base_*, FinalScenario_*),
-        /// to one of the canonical strings below.
-        /// </summary>
         private static string CanonicalLevelName(string raw)
         {
             if (string.IsNullOrEmpty(raw)) return "Unknown";
@@ -647,6 +637,16 @@ namespace EtG.Plugin
             }
             catch { }
             return null;
+        }
+
+        private static string Escape(string s)
+        {
+            if (s == null) return "";
+            return s.Replace("\\", "\\\\")
+                    .Replace("\"", "\\\"")
+                    .Replace("\r", "\\r")
+                    .Replace("\n", "\\n")
+                    .Replace("\t", "\\t");
         }
 
         private void OnDestroy()
